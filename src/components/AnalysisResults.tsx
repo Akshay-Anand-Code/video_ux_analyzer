@@ -394,7 +394,10 @@ export default function AnalysisResults({
     );
   }
 
-  if (stage === "error") {
+  const hasPartialResults =
+    researcherFindings.length > 0 || validatedIssues.length > 0;
+
+  if (stage === "error" && !hasPartialResults) {
     return (
       <div className="space-y-4">
         <div>
@@ -436,6 +439,18 @@ export default function AnalysisResults({
           AI-validated UX findings from your product demo.
         </p>
       </div>
+
+      {stage === "error" && hasPartialResults && (
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-4 shadow-sm">
+          <p className="text-sm font-semibold text-red-700">
+            Analysis interrupted
+          </p>
+          <p className="text-xs text-red-600 mt-1">{message}</p>
+          <p className="text-xs text-red-600/80 mt-2">
+            Partial results below are still valid.
+          </p>
+        </div>
+      )}
 
       {showStepper && (
         <div className="bg-card border border-border rounded-2xl p-5 shadow-sm space-y-4">

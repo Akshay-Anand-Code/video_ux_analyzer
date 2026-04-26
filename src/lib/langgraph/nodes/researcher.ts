@@ -1,6 +1,7 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { AppState } from "../state";
 import type { UXIssue } from "@/types/analysis";
+import { callGeminiWithRetry } from "./gemini-utils";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -48,10 +49,12 @@ export async function researcherNode(
       systemInstruction: SYSTEM_INSTRUCTION,
     });
 
-    const result = await model.generateContent([
-      { fileData: { mimeType: state.videoMimeType, fileUri: state.videoUri } },
-      { text: PROMPT },
-    ]);
+    const result = await callGeminiWithRetry(() =>
+      model.generateContent([
+        { fileData: { mimeType: state.videoMimeType, fileUri: state.videoUri } },
+        { text: PROMPT },
+      ])
+    );
 
     const findings = extractJSON<UXIssue[]>(result.response.text());
     return { researcherFindings: findings };

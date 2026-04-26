@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { AppState } from "../state";
+import { callGeminiWithRetry } from "./gemini-utils";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -32,8 +33,10 @@ export async function synthesizerNode(
       systemInstruction: SYSTEM_INSTRUCTION,
     });
 
-    const result = await model.generateContent(
-      buildPrompt(JSON.stringify(state.validatedIssues, null, 2))
+    const result = await callGeminiWithRetry(() =>
+      model.generateContent(
+        buildPrompt(JSON.stringify(state.validatedIssues, null, 2))
+      )
     );
 
     return { overallAssessment: result.response.text().trim() };

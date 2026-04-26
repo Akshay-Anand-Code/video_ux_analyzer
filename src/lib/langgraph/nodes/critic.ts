@@ -1,6 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import type { AppState } from "../state";
 import type { UXIssue, ValidatedIssue } from "@/types/analysis";
+import { callGeminiWithRetry, createLimiter } from "./gemini-utils";
+
+const criticLimit = createLimiter(3);
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
@@ -47,8 +50,10 @@ export async function criticNode(input: CriticInput): Promise<Partial<AppState>>
       systemInstruction: SYSTEM_INSTRUCTION,
     });
 
-    const result = await model.generateContent(
-      buildPrompt(JSON.stringify(input.issue, null, 2))
+    const result = await criticLimit(() =>
+      callGeminiWithRetry(() =>
+        model.generateContent(buildPrompt(JSON.stringify(input.issue, null, 2)))
+      )
     );
 
     const { verdict, criticReasoning } = extractJSON<{
