@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+
+  --background: 220 14% 96%;
+  --foreground: 222 47% 11%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+
+  --primary: 216 100% 40%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 220 14% 94%;
+  --secondary-foreground: 222 47% 11%;
+
+  --muted: 220 14% 94%;
+  --muted-foreground: 215 16% 47%;
+
+  --accent: 220 14% 92%;
+  --accent-foreground: 222 47% 11%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 216 100% 60%;
+
+  --radius: 0.75rem;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
